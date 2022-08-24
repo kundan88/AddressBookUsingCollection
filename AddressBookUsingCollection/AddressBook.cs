@@ -6,87 +6,109 @@ using System.Threading.Tasks;
 
 namespace AddressBookUsingCollection
 {
-    public class AddressbookEntry
+    public class AddressBook
     {
-        List<Person> add = new List<Person>();
-        public void Show()
+        public List<Person> addressBook;
+        public AddressBook()
         {
-            Console.WriteLine("Enter Firstname");
-            string fname = Console.ReadLine();
-            Console.WriteLine("Enter Last Name");
-            string lname = Console.ReadLine();
-            Console.WriteLine("Enter Address");
-            string address = Console.ReadLine();
-            Console.WriteLine("Enter City");
-            string city = Console.ReadLine();
-            Console.WriteLine("Enter State");
-            string state = Console.ReadLine();
-            Console.WriteLine("Enter Zipcode");
-            string zipcode = Console.ReadLine();
-            Console.WriteLine("Enter Pincode");
-            string pincode = Console.ReadLine();
-            add.Add(new Person()
-            {
-                Firstname = fname,
-                Lastname = lname,
-                Address = address,
-                City = city,
-                State = state,
-                Zipcode = zipcode,
-                Pincode = pincode
-            });
+            addressBook = new List<Person>();
+        }
 
-            foreach (var per in add)
+        public void AddAddressBookEntry(Person person)
+        {
+            addressBook.Add(person);
+        }
+        public void AddAddressBookEntry()
+        {
+            Person personEntered = new Person();
+            Console.WriteLine("Enter First name");
+            personEntered.firstName = Console.ReadLine();
+            Console.WriteLine("Enter Last name");
+            personEntered.lastName = Console.ReadLine();
+            if (addressBook.Find(i => personEntered.Equals(i)) != null)
             {
-                Console.WriteLine("-------Person In address book-----------------------------");
-                Console.WriteLine("First Name:" + per.Firstname);
-                Console.WriteLine("Last Name:" + per.Lastname);
-                Console.WriteLine("Address:" + per.Address);
-                Console.WriteLine("City:" + per.City);
-                Console.WriteLine("State:" + per.State);
-                Console.WriteLine("Zipcode:" + per.Zipcode);
-                Console.WriteLine("Pincode:" + per.Pincode);
-                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine("Person already Exists, enter new person!");
+                return;
+            }
+            Console.WriteLine("Enter Address");
+            personEntered.address = Console.ReadLine();
+            Console.WriteLine("Enter City");
+            personEntered.city = Console.ReadLine();
+            Console.WriteLine("Enter State");
+            personEntered.state = Console.ReadLine();
+            Console.WriteLine("Enter Zip");
+            personEntered.zip = Console.ReadLine();
+            Console.WriteLine("Enter phoneNumber");
+            personEntered.phoneNumber = Console.ReadLine();
+            Console.WriteLine("Enter Email");
+            personEntered.email = Console.ReadLine();
+            addressBook.Add(personEntered);
+        }
+        public void DisplayNamesInAddresBook()
+        {
+            if (addressBook.Count == 0)
+            {
+                Console.WriteLine("No Names to Display");
+            }
+            foreach (Person person in addressBook)
+            {
+                person.DisplayPerson();
             }
         }
-       
-        // Method to check for duplicate Entry of the same person
-        
-        public void DuplicateContact()
-        {
-            Console.Write("Enter How Many contact You want to add?");
-            int number = Convert.ToInt32(Console.ReadLine());
-            for (int i = 1; i <= number; i++)
-            {
-                Console.WriteLine("Press 1 If you want to add a new Contact to the Address Book");
-                switch (Console.ReadLine())
-                {
-                    case "1":
-                        for (int j = 0; j < number; j++)
-                        {
-                            Console.Write("Enter the First Name: ");
-                            string fname = Console.ReadLine();
-                            Console.WriteLine($"'{fname}' add another name {fname}");
-                            if (add.Exists(e => e.Firstname == fname))//used Lambda Expression to check for duplicate entry
-                            {
-                                
-                                Console.WriteLine($" A person having name  '{fname}' exists in our list");
-                                
-                                Console.ReadKey();
-                               
-                            }
-                            else
-                            {
-                                Show();
-                            }
-                        }
-                        break;
 
-                    default:
-                        Console.WriteLine("The choice is not valid.");
-                        break;
+        public void EditContact(string firstName, string lastName)
+        {
+            int index = 0;
+            bool found = false;
+            foreach (Person person in addressBook)
+            {
+                if (person.firstName == firstName && person.lastName == lastName)
+                {
+                    found = true;
+                    break;
                 }
+                index++;
             }
+            if (found)
+            {
+                Console.WriteLine("Enter First name");
+                addressBook[index].firstName = Console.ReadLine();
+                Console.WriteLine("Enter Last name");
+                addressBook[index].lastName = Console.ReadLine();
+                Console.WriteLine("Enter Address");
+                addressBook[index].address = Console.ReadLine();
+                Console.WriteLine("Enter City");
+                addressBook[index].city = Console.ReadLine();
+                Console.WriteLine("Enter State");
+                addressBook[index].state = Console.ReadLine();
+                Console.WriteLine("Enter Zip");
+                addressBook[index].zip = Console.ReadLine();
+                Console.WriteLine("Enter phoneNumber");
+                addressBook[index].phoneNumber = Console.ReadLine();
+                Console.WriteLine("Enter Email");
+                addressBook[index].email = Console.ReadLine();
+            }
+            else
+                Console.WriteLine("Entry Not found for the name");
+        }
+
+        public void DeleteContact(string firstName, string lastName)
+        {
+            int index = 0;
+            bool found = false;
+            foreach (Person person in addressBook)
+            {
+                if (person.firstName == firstName && person.lastName == lastName)
+                {
+                    found = true;
+                    break;
+                }
+                index++;
+            }
+            if (found)
+                addressBook.Remove(addressBook[index]);
+            else
+                Console.WriteLine("Entry Not found");
         }
     }
 }
