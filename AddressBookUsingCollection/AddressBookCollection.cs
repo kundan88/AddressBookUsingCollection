@@ -1,5 +1,4 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
+﻿
 using System.Globalization;
 using System.IO;
 using System;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace AddressBookUsingCollection
 {
@@ -63,51 +63,31 @@ namespace AddressBookUsingCollection
         }
 
 
-        public void WriteAddressBookCollectionToCSVFiles()
+        /// <summary>
+        /// UC15:Ability to Read or Write the Address Book with Persons Contact as JSON File
+        /// </summary>
+        public void WriteAddressBookCollectionFromJsonFiles()
         {
-            string folderPath = @"C:\Users\DELL\Desktop\Batch_179\CsvFiles\";
-            CsvConfiguration configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                IncludePrivateMembers = true,
-            };
+            string folderPath = @"C:\Users\DELL\Desktop\Assignment\AddressBookUsingCollection\AddressBookUsingCollection10\";
             foreach (var AddressBookItem in addressBookDictionary)
             {
-                string filePath = folderPath + AddressBookItem.Key + ".csv";
+                string filePath = folderPath + AddressBookItem.Key + ".json";
+                JsonSerializer serializer = new JsonSerializer();
                 using (StreamWriter writer = new StreamWriter(filePath))
-                using (var csvExport = new CsvWriter(writer, configuration))
+                using (JsonWriter jsonWriter = new JsonTextWriter(writer))
                 {
-                    csvExport.WriteHeader<Person>();
-                    csvExport.NextRecord();
-                    foreach (Person person in AddressBookItem.Value.addressBook)
-                    {
-                        csvExport.WriteField($"{person.firstName}");
-                        csvExport.WriteField($"{person.lastName}");
-                        csvExport.WriteField($"{person.address}");
-                        csvExport.WriteField($"{person.city}");
-                        csvExport.WriteField($"{person.state}");
-                        csvExport.WriteField($"{person.zip}");
-                        csvExport.WriteField($"{person.phoneNumber}");
-                        csvExport.WriteField($"{person.email}");
-                        csvExport.NextRecord();
-                    }
+                    serializer.Serialize(writer, AddressBookItem.Value.addressBook);
                 }
             }
         }
-        public void ReadAddressBookCollectionFromCSVFiles()
+        public void ReadAddressBookCollectionFromJsonFiles()
         {
-            string filePath = @"C:\Users\DELL\Desktop\Batch_179\CsvFiles\";
-            string[] filePaths = Directory.GetFiles(filePath, "*.csv");
-            foreach (var presentFiles in filePaths)
-            {
-                using (StreamReader streamReader = File.OpenText(presentFiles))
-                {
-                    string lines = "";
-                    while ((lines = streamReader.ReadLine()) != null)
-                    {
-                        Console.WriteLine(lines);
-                    }
-                }
-            }
+            string folderPath = @"C:\Users\DELL\Desktop\Assignment\AddressBookUsingCollection\AddressBookUsingCollection10\Employee.json";
+            string result = File.ReadAllText(folderPath);
+            List<Person> contactDetails = JsonConvert.DeserializeObject<List<Person>>(result);
+            Console.WriteLine("Successfully read records from the file" + contactDetails);
+            Console.WriteLine(result);
         }
+
     }
 }
