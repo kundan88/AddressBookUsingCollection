@@ -1,4 +1,8 @@
-﻿using System;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using System.Globalization;
+using System.IO;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,36 +62,49 @@ namespace AddressBookUsingCollection
             }
         }
 
-        public void ReadAddressBookFromFile()
+
+        public void WriteAddressBookCollectionToCSVFiles()
         {
-            string filePath = @"C:\Users\DELL\Desktop\Batch_179\Files\ReadFile.txt";
-            if (File.Exists(filePath))
+            string folderPath = @"C:\Users\DELL\Desktop\Batch_179\CsvFiles\";
+            CsvConfiguration configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                string output = File.ReadAllText(filePath);
-                Console.WriteLine(output);
-            }
-            else
-                Console.WriteLine("file don't exist");
-        }
-        public void WriteAddressBookCollectionToFiles()
-        {
-            string folderPath = @"C:\Users\DELL\Desktop\Batch_179\Files\";
+                IncludePrivateMembers = true,
+            };
             foreach (var AddressBookItem in addressBookDictionary)
             {
-                string filePath = folderPath + AddressBookItem.Key + ".txt";
+                string filePath = folderPath + AddressBookItem.Key + ".csv";
                 using (StreamWriter writer = new StreamWriter(filePath))
+                using (var csvExport = new CsvWriter(writer, configuration))
                 {
+                    csvExport.WriteHeader<Person>();
+                    csvExport.NextRecord();
                     foreach (Person person in AddressBookItem.Value.addressBook)
                     {
-                        writer.WriteLine($"First Name : {person.firstName}");
-                        writer.WriteLine($"Last Name : {person.lastName}");
-                        writer.WriteLine($"Address : {person.address}");
-                        writer.WriteLine($"City : {person.city}");
-                        writer.WriteLine($"State : {person.state}");
-                        writer.WriteLine($"Zip : {person.zip}");
-                        writer.WriteLine($"PhoneNumber : {person.phoneNumber}");
-                        writer.WriteLine($"Email : {person.email}");
-                        writer.WriteLine("------------------------");
+                        csvExport.WriteField($"{person.firstName}");
+                        csvExport.WriteField($"{person.lastName}");
+                        csvExport.WriteField($"{person.address}");
+                        csvExport.WriteField($"{person.city}");
+                        csvExport.WriteField($"{person.state}");
+                        csvExport.WriteField($"{person.zip}");
+                        csvExport.WriteField($"{person.phoneNumber}");
+                        csvExport.WriteField($"{person.email}");
+                        csvExport.NextRecord();
+                    }
+                }
+            }
+        }
+        public void ReadAddressBookCollectionFromCSVFiles()
+        {
+            string filePath = @"C:\Users\DELL\Desktop\Batch_179\CsvFiles\";
+            string[] filePaths = Directory.GetFiles(filePath, "*.csv");
+            foreach (var presentFiles in filePaths)
+            {
+                using (StreamReader streamReader = File.OpenText(presentFiles))
+                {
+                    string lines = "";
+                    while ((lines = streamReader.ReadLine()) != null)
+                    {
+                        Console.WriteLine(lines);
                     }
                 }
             }

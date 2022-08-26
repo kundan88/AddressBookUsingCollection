@@ -8,7 +8,12 @@ namespace AddressBookUsingCollection
 {
     public class AddressBook
     {
-        public List<Person> addressBook = new List<Person>();
+        public List<Person> addressBook;
+        public AddressBook()
+        {
+            addressBook = new List<Person>();
+        }
+
         public void AddAddressBookEntry(Person person)
         {
             addressBook.Add(person);
@@ -144,7 +149,5 @@ namespace AddressBookUsingCollection
         {
             addressBook.Sort((x, y) => x.zip.CompareTo(y.zip));
         }
-
-
     }
 }
