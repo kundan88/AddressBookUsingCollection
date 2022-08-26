@@ -8,16 +8,11 @@ namespace AddressBookUsingCollection
 {
     public class AddressBook
     {
-        public List<Person> addressBook;
-        public AddressBook()
-        {
-            addressBook = new List<Person>();
-        }
-
-        public void AddAddressBookEntry(Person person)
-        {
+        public List<Person> addressBook = new List<Person>();
+            public void AddAddressBookEntry(Person person)
+            {
             addressBook.Add(person);
-        }
+            }
         public void AddAddressBookEntry()
         {
             Person personEntered = new Person();
@@ -109,6 +104,10 @@ namespace AddressBookUsingCollection
                 addressBook.Remove(addressBook[index]);
             else
                 Console.WriteLine("Entry Not found");
+        }
+        public void SortByPersonName()
+        {
+            addressBook.Sort((x, y) => x.firstName.CompareTo(y.firstName));
         }
     }
 }
